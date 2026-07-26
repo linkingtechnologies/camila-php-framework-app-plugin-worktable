@@ -1,0 +1,46 @@
+// Italiano — plugin ai-toolbox
+mcp.field.url = URL endpoint MCP
+mcp.field.url.placeholder = https://example.com/mcp
+mcp.field.authHeader = Header Authorization (opzionale)
+mcp.field.authHeader.placeholder = Bearer <token>
+mcp.btn.connect = Connetti
+mcp.btn.connecting = Connessione…
+mcp.error.invalidUrl = Inserisci un URL http:// o https:// valido.
+mcp.error.step.initialize = Handshake (initialize) fallito: %s
+mcp.error.step.tools = Recupero strumenti fallito: %s
+mcp.serverInfo.title = Server
+mcp.serverInfo.name = Nome
+mcp.serverInfo.version = Versione
+mcp.serverInfo.protocol = Versione protocollo
+mcp.tools.title = Strumenti (%s)
+mcp.tools.empty = Questo server non espone alcuno strumento.
+mcp.tools.inputSchema = Schema input
+
+home.mcpEndpoint.label = Endpoint MCP di questa app
+home.mcpEndpoint.btn.copy = Copia
+home.mcpEndpoint.copied = Copiato!
+home.mcpEndpoint.copyError = Copia fallita — seleziona il testo e copia manualmente.
+
+itin.error.tableNotFound = Impossibile trovare la tabella "Accomodations" tramite client.tables().
+itin.error.load = Caricamento alloggi fallito: %s
+itin.btn.retry = Riprova
+itin.warn.skipped = %s alloggio/i escluso/i — coordinate mancanti o non valide.
+itin.empty = Nessun alloggio con coordinate valide da mostrare.
+itin.sidebar.title = Tappe (%s)
+itin.popup.checkin = Check-in
+itin.popup.checkout = Check-out
+itin.popup.breakfast = Colazione inclusa
+itin.popup.parking = Parcheggio incluso
+itin.popup.booking = Prenotazione
+itin.popup.notes = Note
+itin.selector.label = Itinerario
+itin.warn.skippedPoi = %s punto/i di interesse escluso/i — coordinate mancanti o non valide.
+itin.poi.notFound = Tabella Points of Interest non trovata — mostro solo gli alloggi.
+itin.poi.sidebar.title = Punti di interesse (%s)
+itin.poi.popup.planned = Pianificato
+itin.poi.popup.duration = Durata
+itin.poi.popup.price = Prezzo
+itin.poi.popup.bookingRequired = Prenotazione richiesta
+itin.poi.popup.kidFriendly = Adatto ai bambini
+itin.poi.popup.priority = Priorità
+itin.poi.popup.linkedAccommodation = Alloggio collegato

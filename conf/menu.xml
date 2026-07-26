@@ -1,0 +1,8 @@
+<?xml version='1.0' standalone='yes'?>
+<menu>
+ <tab>
+  <id>m0</id>
+  <title>AI SANDBOX</title>
+  <url>?dashboard=m0</url>
+ </tab>
+</menu>

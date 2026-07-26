@@ -1,0 +1,46 @@
+// English — ai-toolbox plugin
+mcp.field.url = MCP endpoint URL
+mcp.field.url.placeholder = https://example.com/mcp
+mcp.field.authHeader = Authorization header (optional)
+mcp.field.authHeader.placeholder = Bearer <token>
+mcp.btn.connect = Connect
+mcp.btn.connecting = Connecting…
+mcp.error.invalidUrl = Enter a valid http:// or https:// URL.
+mcp.error.step.initialize = Handshake (initialize) failed: %s
+mcp.error.step.tools = Listing tools failed: %s
+mcp.serverInfo.title = Server
+mcp.serverInfo.name = Name
+mcp.serverInfo.version = Version
+mcp.serverInfo.protocol = Protocol version
+mcp.tools.title = Tools (%s)
+mcp.tools.empty = This server does not expose any tools.
+mcp.tools.inputSchema = Input schema
+
+home.mcpEndpoint.label = This app's MCP endpoint
+home.mcpEndpoint.btn.copy = Copy
+home.mcpEndpoint.copied = Copied!
+home.mcpEndpoint.copyError = Copy failed — select the text and copy manually.
+
+itin.error.tableNotFound = Could not find the "Accomodations" table via client.tables().
+itin.error.load = Failed to load accommodations: %s
+itin.btn.retry = Retry
+itin.warn.skipped = %s accommodation(s) skipped — missing or invalid coordinates.
+itin.empty = No accommodations with valid coordinates to show.
+itin.sidebar.title = Stops (%s)
+itin.popup.checkin = Check-in
+itin.popup.checkout = Check-out
+itin.popup.breakfast = Breakfast included
+itin.popup.parking = Parking included
+itin.popup.booking = Booking
+itin.popup.notes = Notes
+itin.selector.label = Itinerary
+itin.warn.skippedPoi = %s point(s) of interest skipped — missing or invalid coordinates.
+itin.poi.notFound = Points of Interest table not found — showing accommodations only.
+itin.poi.sidebar.title = Points of Interest (%s)
+itin.poi.popup.planned = Planned
+itin.poi.popup.duration = Duration
+itin.poi.popup.price = Price
+itin.poi.popup.bookingRequired = Booking required
+itin.poi.popup.kidFriendly = Kid-friendly
+itin.poi.popup.priority = Priority
+itin.poi.popup.linkedAccommodation = Linked accommodation
