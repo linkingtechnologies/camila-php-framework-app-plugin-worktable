@@ -32,3 +32,11 @@ tr.is-readonly select,
 tr.is-readonly input {
   cursor: not-allowed;
 }
+
+/* === Title box visually attached to the tab bar above it === */
+#app .spa-title-box {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 3px solid #3273dc;
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.06);
+}

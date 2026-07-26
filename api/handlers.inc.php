@@ -1,15 +1,15 @@
 <?php
 /**
- * ai-toolbox — Plugin API handlers
- * Base path: /app/<app-name>/cf_api.php
+ * worktable — Plugin API handlers
+ * Base path: /app/<app-name>/cf_api.php/worktable
  *
  * ENDPOINTS
  * ─────────────────────────────────────────────────────────────────────────────
  *
- * GET /worktable/status                                              [PRIVATE]
+ * GET /status                                                        [PRIVATE]
  *   Simple liveness check. Returns: {status: "ok"}
  *
- * POST /worktable/mcp-proxy                                          [PRIVATE]
+ * POST /mcp-proxy                                                    [PRIVATE]
  *   Forwards a single JSON-RPC 2.0 message to an arbitrary MCP Streamable HTTP
  *   endpoint, avoiding browser CORS restrictions. Used by the MCP Tester SPA.
  *   Body: { url, authHeader?, sessionId?, payload }

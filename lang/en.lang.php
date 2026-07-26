@@ -1,4 +1,4 @@
-// English — ai-toolbox plugin
+// English — worktable plugin
 mcp.field.url = MCP endpoint URL
 mcp.field.url.placeholder = https://example.com/mcp
 mcp.field.authHeader = Authorization header (optional)
@@ -16,31 +16,24 @@ mcp.tools.title = Tools (%s)
 mcp.tools.empty = This server does not expose any tools.
 mcp.tools.inputSchema = Input schema
 
-home.mcpEndpoint.label = This app's MCP endpoint
-home.mcpEndpoint.btn.copy = Copy
-home.mcpEndpoint.copied = Copied!
-home.mcpEndpoint.copyError = Copy failed — select the text and copy manually.
+endpoints.mcpEndpoint.label = This app's MCP endpoint
+endpoints.restApi.label = This app's REST API base URL
+endpoints.btn.copy = Copy
+endpoints.copied = Copied!
+endpoints.copyError = Copy failed — select the text and copy manually.
 
-itin.error.tableNotFound = Could not find the "Accomodations" table via client.tables().
-itin.error.load = Failed to load accommodations: %s
-itin.btn.retry = Retry
-itin.warn.skipped = %s accommodation(s) skipped — missing or invalid coordinates.
-itin.empty = No accommodations with valid coordinates to show.
-itin.sidebar.title = Stops (%s)
-itin.popup.checkin = Check-in
-itin.popup.checkout = Check-out
-itin.popup.breakfast = Breakfast included
-itin.popup.parking = Parking included
-itin.popup.booking = Booking
-itin.popup.notes = Notes
-itin.selector.label = Itinerary
-itin.warn.skippedPoi = %s point(s) of interest skipped — missing or invalid coordinates.
-itin.poi.notFound = Points of Interest table not found — showing accommodations only.
-itin.poi.sidebar.title = Points of Interest (%s)
-itin.poi.popup.planned = Planned
-itin.poi.popup.duration = Duration
-itin.poi.popup.price = Price
-itin.poi.popup.bookingRequired = Booking required
-itin.poi.popup.kidFriendly = Kid-friendly
-itin.poi.popup.priority = Priority
-itin.poi.popup.linkedAccommodation = Linked accommodation
+endpoints.claudeDesktop.title = Connect to Claude Desktop
+endpoints.claudeDesktop.step1 = 1. Generate an API token for your CAMILA user: Admin → Users → edit your user → "Set API token".
+endpoints.claudeDesktop.step2 = 2. In Claude Desktop, add a custom connector using the MCP endpoint URL above (Settings → Connectors), or add the entry below to your claude_desktop_config.json, replacing <token> with the token from step 1.
+endpoints.claudeDesktop.configLabel = Example claude_desktop_config.json entry
+
+endpoints.openai.title = Connect to ChatGPT (Windows app / web)
+endpoints.openai.step1 = 1. In ChatGPT: Settings → Security & access → enable Developer mode.
+endpoints.openai.step2 = 2. Go to Settings → Plugins, press "+" and paste the MCP endpoint URL above.
+endpoints.openai.step3 = 3. In a conversation, select the plugin from the "+" menu, or invoke it with "@".
+endpoints.openai.limits = Limits: ChatGPT only connects to remote MCP servers reachable over the network (Streamable HTTP or SSE), using OAuth or no authentication — unlike Claude Desktop, it does not launch local stdio-based servers. The endpoint normally needs to be public and reachable over HTTPS.
+endpoints.openai.warnNotPublic = This environment's MCP endpoint is not a public HTTPS address, so ChatGPT will not be able to reach it as-is — publish it behind HTTPS, or expose it through a secure tunnel, first.
+endpoints.openai.warnAuth = Unconfirmed: ChatGPT's connector setup is reported to support OAuth or no authentication. This app's MCP endpoint instead requires a custom "X-API-Key" header — verify whether ChatGPT lets you attach that header before relying on this connection.
+
+home.welcome.title = Welcome
+home.welcome.message = This is the worktable plugin's landing page.

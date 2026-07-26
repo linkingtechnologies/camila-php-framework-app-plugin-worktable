@@ -1,8 +1,23 @@
 <?xml version='1.0' standalone='yes'?>
 <menu>
  <tab>
-  <id>m0</id>
-  <title>AI SANDBOX</title>
-  <url>?dashboard=m0</url>
+  <id>home</id>
+  <title>Home</title>
+  <url>?dashboard=home</url>
+ </tab>
+ <tab>
+  <id>worktable-explorer</id>
+  <title>Worktable Explorer</title>
+  <url>?dashboard=worktable-explorer</url>
+ </tab>
+ <tab>
+  <id>endpoints</id>
+  <title>Endpoints</title>
+  <url>?dashboard=endpoints</url>
+ </tab>
+ <tab>
+  <id>mcp</id>
+  <title>MCP Checker</title>
+  <url>?dashboard=mcp</url>
  </tab>
 </menu>

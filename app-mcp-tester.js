@@ -56,7 +56,7 @@ function isValidUrl(value) {
 }
 
 async function callProxy(url, authHeader, sessionId, payload) {
-  const res = await client.call("POST", "/ai-toolbox/mcp-proxy", { url, authHeader, sessionId, payload });
+  const res = await client.call("POST", "/worktable/mcp-proxy", { url, authHeader, sessionId, payload });
   return res;
 }
 
@@ -100,7 +100,7 @@ async function connect() {
       params: {
         protocolVersion: "2024-11-05",
         capabilities: {},
-        clientInfo: { name: "ai-toolbox-mcp-tester", version: "1.0.0" },
+        clientInfo: { name: "worktable-mcp-tester", version: "1.0.0" },
       },
     });
     if (myRun()) return;

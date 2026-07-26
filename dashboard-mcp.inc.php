@@ -1,5 +1,5 @@
 <?php
-// MCP Tester dashboard — ai-toolbox plugin
+// MCP Tester dashboard — worktable plugin
 // Manual mount pattern (see AGENTS.md): APP_CONFIG / I18N must be injected before the module loads.
 
 global $_CAMILA;
@@ -70,7 +70,7 @@ $html = <<<HTML
 HTML;
 
 $_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, $html));
-$_CAMILA['page']->camila_add_js("<link href=\"plugins/ai-toolbox/app.css\" rel=\"stylesheet\">\n");
+$_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css\" rel=\"stylesheet\">\n");
 $mcpScriptVersion = @filemtime(__DIR__ . '/app-mcp-tester.js');
 $mcpVerSuffix     = $mcpScriptVersion ? ('?v=' . $mcpScriptVersion) : '';
-$_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/ai-toolbox/app-mcp-tester.js' . $mcpVerSuffix . '"></script>');
+$_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/worktable/app-mcp-tester.js' . $mcpVerSuffix . '"></script>');

@@ -1,5 +1,5 @@
 <?php
-// WorkTable Explorer dashboard — ai-toolbox plugin
+// WorkTable Explorer dashboard — worktable plugin
 // Manual mount pattern (see AGENTS.md). No custom I18N needed for this SPA (all
 // strings live in views/worktable-explorer/index.js, copied verbatim from
 // segreteria-campo's plugin — see specs/worktable-explorer/).
@@ -31,7 +31,7 @@ $html = <<<HTML
 HTML;
 
 $_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, $html));
-$_CAMILA['page']->camila_add_js("<link href=\"plugins/ai-toolbox/app.css\" rel=\"stylesheet\">\n");
+$_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css\" rel=\"stylesheet\">\n");
 $wtExplorerScriptVersion = @filemtime(__DIR__ . '/app-worktable-explorer.js');
 $wtExplorerVerSuffix     = $wtExplorerScriptVersion ? ('?v=' . $wtExplorerScriptVersion) : '';
-$_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/ai-toolbox/app-worktable-explorer.js' . $wtExplorerVerSuffix . '"></script>');
+$_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/worktable/app-worktable-explorer.js' . $wtExplorerVerSuffix . '"></script>');
