@@ -1,20 +1,20 @@
 // English — worktable plugin
-mcp.field.url = MCP endpoint URL
-mcp.field.url.placeholder = https://example.com/mcp
-mcp.field.authHeader = Authorization header (optional)
-mcp.field.authHeader.placeholder = Bearer <token>
-mcp.btn.connect = Connect
-mcp.btn.connecting = Connecting…
-mcp.error.invalidUrl = Enter a valid http:// or https:// URL.
-mcp.error.step.initialize = Handshake (initialize) failed: %s
-mcp.error.step.tools = Listing tools failed: %s
-mcp.serverInfo.title = Server
-mcp.serverInfo.name = Name
-mcp.serverInfo.version = Version
-mcp.serverInfo.protocol = Protocol version
-mcp.tools.title = Tools (%s)
-mcp.tools.empty = This server does not expose any tools.
-mcp.tools.inputSchema = Input schema
+mcpChecker.field.url = MCP endpoint URL
+mcpChecker.field.url.placeholder = https://example.com/mcp
+mcpChecker.field.authHeader = Authorization header (optional)
+mcpChecker.field.authHeader.placeholder = Bearer <token>
+mcpChecker.btn.connect = Connect
+mcpChecker.btn.connecting = Connecting…
+mcpChecker.error.invalidUrl = Enter a valid http:// or https:// URL.
+mcpChecker.error.step.initialize = Handshake (initialize) failed: %s
+mcpChecker.error.step.tools = Listing tools failed: %s
+mcpChecker.serverInfo.title = Server
+mcpChecker.serverInfo.name = Name
+mcpChecker.serverInfo.version = Version
+mcpChecker.serverInfo.protocol = Protocol version
+mcpChecker.tools.title = Tools (%s)
+mcpChecker.tools.empty = This server does not expose any tools.
+mcpChecker.tools.inputSchema = Input schema
 
 endpoints.mcpEndpoint.label = This app's MCP endpoint
 endpoints.restApi.label = This app's REST API base URL

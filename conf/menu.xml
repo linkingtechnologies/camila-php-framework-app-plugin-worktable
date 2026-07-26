@@ -16,8 +16,8 @@
   <url>?dashboard=endpoints</url>
  </tab>
  <tab>
-  <id>mcp</id>
+  <id>mcp-checker</id>
   <title>MCP Checker</title>
-  <url>?dashboard=mcp</url>
+  <url>?dashboard=mcp-checker</url>
  </tab>
 </menu>

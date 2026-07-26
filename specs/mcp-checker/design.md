@@ -1,4 +1,4 @@
-# MCP Tester — design
+# MCP Checker — design
 
 ## Structure
 
@@ -67,7 +67,7 @@ JSON-RPC messages sent, in order:
 { jsonrpc: "2.0", id: 1, method: "initialize", params: {
   protocolVersion: "2024-11-05",
   capabilities: {},
-  clientInfo: { name: "worktable-mcp-tester", version: "1.0.0" },
+  clientInfo: { name: "worktable-mcp-checker", version: "1.0.0" },
 }}
 
 // 2) notification — no id, no response body expected
@@ -113,6 +113,6 @@ Not applicable.
 - **Session id propagation**: if the `initialize` proxy response includes a `sessionId`, it is stored in `state.sessionId` and sent as `Mcp-Session-Id` on the following two proxy calls. Some servers do not use sessions; an empty `sessionId` is valid and simply omits the header.
 - **Error normalization**: uses a local, simplified `normalizeApiError(err)` (returns `{ status, message }` only — no `kind` classification, no `userFriendlyErrorText`) for proxy/network-level failures (HTTP-level); `norm.message` is shown as-is. For JSON-RPC-level errors (the proxy call succeeds but `body.error` is present), surface `body.error.message` (and `body.error.code` if present) directly — these are the server's own diagnostic text and more useful to the operator than a generic mapping.
 - **Async render safety**: use the `cancelled` flag pattern. If the user edits `url` or `authHeader` while a connect sequence is in flight, set `cancelled = true` for that sequence so its late responses do not overwrite the newly-reset state.
-- **Context reset**: editing `url` or `authHeader` resets `connected`, `error`, `sessionId`, `serverInfo`, `protocolVersion`, `tools` to their initial values (UC-MCP1 extension 3a). It does not reset the field being edited.
+- **Context reset**: editing `url` or `authHeader` resets `connected`, `error`, `sessionId`, `serverInfo`, `protocolVersion`, `tools` to their initial values (UC-MCPCHECKER1 extension 3a). It does not reset the field being edited.
 - **No WorkTableClient table operations**: this SPA only uses `client.call()` (custom plugin endpoint), never `client.table(...)`.
 - **Security**: the backend proxy performs a plain outbound HTTP(S) request with `CURLOPT_SSL_VERIFYPEER` enabled; it does not log the `authHeader` value. The frontend never persists `url`/`authHeader` (no localStorage), consistent with "do not expose secrets in generated code".

@@ -65,5 +65,5 @@ CAMILA WorkTable administrator / developer.
 
 ## Known gaps
 
-- The "MCP Checker" tab (spec folder: `specs/mcp-tester/`) lets an operator supply an arbitrary `Authorization` header when testing any MCP endpoint. This app's own MCP endpoint actually authenticates via `X-API-Key`, not `Authorization` — so testing this app's own endpoint through the MCP Tester as-is will not authenticate correctly. Not addressed here; flagged for a future fix.
+- The "MCP Checker" tab (spec folder: `specs/mcp-checker/`) lets an operator supply an arbitrary `Authorization` header when testing any MCP endpoint. This app's own MCP endpoint actually authenticates via `X-API-Key`, not `Authorization` — so testing this app's own endpoint through the MCP Checker as-is will not authenticate correctly. Not addressed here; flagged for a future fix.
 - ChatGPT's connector setup is reported to support OAuth or no authentication; whether it also lets you attach a custom `X-API-Key` header (needed for this app's endpoint) is unconfirmed — the page warns about this rather than asserting either way. The ChatGPT steps themselves are based on information supplied by the plugin maintainer, not independently verified against OpenAI's own documentation.

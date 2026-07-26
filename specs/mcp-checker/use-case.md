@@ -1,4 +1,4 @@
-# UC-MCP1 — Test an MCP endpoint's tool catalog
+# UC-MCPCHECKER1 — Test an MCP endpoint's tool catalog
 
 ## System context
 
@@ -38,7 +38,7 @@ CAMILA WorkTable administrator / developer.
 
 ### Step 1 — Enter endpoint
 
-1. User opens the "MCP Checker" tab (the tab's display label; the spec folder and internal naming remain "mcp-tester"); the URL field is pre-filled with this app's own MCP endpoint (same value shown on the Endpoints tab), so testing it requires no typing.
+1. User opens the "MCP Checker" tab; the URL field is pre-filled with this app's own MCP endpoint (same value shown on the Endpoints tab), so testing it requires no typing.
 2. User types a different MCP endpoint URL into the URL field, or leaves the pre-filled one.
 3. User optionally types a value for the `Authorization` header (e.g. `Bearer <token>`).
 

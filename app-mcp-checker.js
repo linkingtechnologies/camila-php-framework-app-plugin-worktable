@@ -1,4 +1,4 @@
-// app-mcp-tester.js
+// app-mcp-checker.js
 import { html, render } from "../../../../camila/js/lit-html/lit-html.js";
 
 const root = document.getElementById("app");
@@ -77,7 +77,7 @@ async function connect() {
   const url = state.url.trim();
   if (!isValidUrl(url)) {
     resetResults();
-    state.error = { step: "validate", message: t("mcp.error.invalidUrl") };
+    state.error = { step: "validate", message: t("mcpChecker.error.invalidUrl") };
     mount();
     return;
   }
@@ -100,7 +100,7 @@ async function connect() {
       params: {
         protocolVersion: "2024-11-05",
         capabilities: {},
-        clientInfo: { name: "worktable-mcp-tester", version: "1.0.0" },
+        clientInfo: { name: "worktable-mcp-checker", version: "1.0.0" },
       },
     });
     if (myRun()) return;
@@ -165,12 +165,12 @@ function ServerInfoBox() {
   if (!state.serverInfo && !state.protocolVersion) return "";
   return html`
     <div class="box mb-4">
-      <h4 class="title is-6 mb-2">${t("mcp.serverInfo.title")}</h4>
+      <h4 class="title is-6 mb-2">${t("mcpChecker.serverInfo.title")}</h4>
       <table class="table is-small is-narrow is-fullwidth">
         <tbody>
-          <tr><th>${t("mcp.serverInfo.name")}</th><td>${state.serverInfo?.name ?? "—"}</td></tr>
-          <tr><th>${t("mcp.serverInfo.version")}</th><td>${state.serverInfo?.version ?? "—"}</td></tr>
-          <tr><th>${t("mcp.serverInfo.protocol")}</th><td>${state.protocolVersion ?? "—"}</td></tr>
+          <tr><th>${t("mcpChecker.serverInfo.name")}</th><td>${state.serverInfo?.name ?? "—"}</td></tr>
+          <tr><th>${t("mcpChecker.serverInfo.version")}</th><td>${state.serverInfo?.version ?? "—"}</td></tr>
+          <tr><th>${t("mcpChecker.serverInfo.protocol")}</th><td>${state.protocolVersion ?? "—"}</td></tr>
         </tbody>
       </table>
     </div>
@@ -181,16 +181,16 @@ function ToolsList() {
   if (state.tools === null) return "";
   return html`
     <div class="box">
-      <h4 class="title is-6 mb-3">${t("mcp.tools.title", state.tools.length)}</h4>
+      <h4 class="title is-6 mb-3">${t("mcpChecker.tools.title", state.tools.length)}</h4>
       ${state.tools.length === 0
-        ? html`<p class="has-text-grey">${t("mcp.tools.empty")}</p>`
+        ? html`<p class="has-text-grey">${t("mcpChecker.tools.empty")}</p>`
         : state.tools.map(tool => html`
             <div class="mb-4">
               <p><strong>${tool.name}</strong></p>
               ${tool.description ? html`<p class="has-text-grey">${tool.description}</p>` : ""}
               ${tool.inputSchema ? html`
                 <details>
-                  <summary>${t("mcp.tools.inputSchema")}</summary>
+                  <summary>${t("mcpChecker.tools.inputSchema")}</summary>
                   <pre style="white-space:pre-wrap; word-break:break-word;">${JSON.stringify(tool.inputSchema, null, 2)}</pre>
                 </details>
               ` : ""}
@@ -205,25 +205,25 @@ function App() {
     <div class="container pt-0 pb-4">
         <div class="box mb-4 spa-title-box">
           <div class="field">
-            <label class="label">${t("mcp.field.url")}</label>
+            <label class="label">${t("mcpChecker.field.url")}</label>
             <div class="control">
               <input
                 class="input"
                 type="text"
                 .value=${state.url}
-                placeholder=${t("mcp.field.url.placeholder")}
+                placeholder=${t("mcpChecker.field.url.placeholder")}
                 @input=${e => onFieldInput("url", e.target.value)}
               />
             </div>
           </div>
           <div class="field">
-            <label class="label">${t("mcp.field.authHeader")}</label>
+            <label class="label">${t("mcpChecker.field.authHeader")}</label>
             <div class="control">
               <input
                 class="input"
                 type="text"
                 .value=${state.authHeader}
-                placeholder=${t("mcp.field.authHeader.placeholder")}
+                placeholder=${t("mcpChecker.field.authHeader.placeholder")}
                 @input=${e => onFieldInput("authHeader", e.target.value)}
               />
             </div>
@@ -236,7 +236,7 @@ function App() {
                 @click=${connect}
               >
                 <span class="icon"><i class="ri-plug-line"></i></span>
-                <span>${state.connecting ? t("mcp.btn.connecting") : t("mcp.btn.connect")}</span>
+                <span>${state.connecting ? t("mcpChecker.btn.connecting") : t("mcpChecker.btn.connect")}</span>
               </button>
             </div>
           </div>
@@ -245,8 +245,8 @@ function App() {
         ${state.error ? html`
           <article class="message is-danger mb-4">
             <div class="message-body">
-              ${state.error.step === "initialize" ? t("mcp.error.step.initialize", state.error.message)
-                : state.error.step === "tools" ? t("mcp.error.step.tools", state.error.message)
+              ${state.error.step === "initialize" ? t("mcpChecker.error.step.initialize", state.error.message)
+                : state.error.step === "tools" ? t("mcpChecker.error.step.tools", state.error.message)
                 : state.error.message}
             </div>
           </article>

@@ -11,7 +11,7 @@
  *
  * POST /mcp-proxy                                                    [PRIVATE]
  *   Forwards a single JSON-RPC 2.0 message to an arbitrary MCP Streamable HTTP
- *   endpoint, avoiding browser CORS restrictions. Used by the MCP Tester SPA.
+ *   endpoint, avoiding browser CORS restrictions. Used by the MCP Checker SPA.
  *   Body: { url, authHeader?, sessionId?, payload }
  *   Returns: { httpStatus, sessionId, body, raw }
  *

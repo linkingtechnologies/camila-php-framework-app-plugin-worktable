@@ -4,7 +4,7 @@
 
 **One deliberate deviation from byte-for-byte:** in `view()`'s root element, `class="box"` became `class="box spa-title-box"` and the inline `style="...margin:1rem"` became `style="...margin:0 0 1rem 0"`, to match this plugin's shared "content flush against the tab bar" layout (see `app.css` `.spa-title-box` — squared top corners, blue top accent border, no top/side margin) applied to the other three SPAs in this plugin. This is the only intentional edit to the copied view module; everything else is unmodified.
 
-**Divergence from AGENTS.md conventions in this plugin:** all UI text is hardcoded Italian directly in the view module — there is no `window.I18N` / plugin lang file usage here, unlike MCP Tester and Home. This was kept as-is on copy rather than retrofitted to the `t()` / lang-file pattern, to avoid rewriting ~1181 lines of UI strings as part of a straight port. If this SPA is actively maintained going forward, consider migrating it to the i18n pattern used elsewhere in this plugin.
+**Divergence from AGENTS.md conventions in this plugin:** all UI text is hardcoded Italian directly in the view module — there is no `window.I18N` / plugin lang file usage here, unlike MCP Checker and Home. This was kept as-is on copy rather than retrofitted to the `t()` / lang-file pattern, to avoid rewriting ~1181 lines of UI strings as part of a straight port. If this SPA is actively maintained going forward, consider migrating it to the i18n pattern used elsewhere in this plugin.
 
 **Pulsante dashboard:** "Worktable Explorer" (tab menu, vedi `conf/menu.xml`)
 
@@ -298,6 +298,6 @@ Opzioni di configurazione: `options.tablesPath` (default `"/tables"`), `options.
 - **Selezione fotocamera**: se `cameraDevices.length > 1`, il `<select>` nel modal mostra i label dei dispositivi (o "Fotocamera N" se il label è vuoto — browser richiedono il permesso prima di esporre i label).
 - **`listAttachments()` silente**: se fallisce, `attachmentMap` resta vuota. Nessun errore mostrato.
 - **Cache busting — vista interna**: `VERSION = window.APP_CONFIG?.version || Date.now()`, usata per l'import dinamico di `views/worktable-explorer/index.js`. `APP_CONFIG.version` non è impostato da questo mount (né lo era nella sorgente), quindi ricade sempre su `Date.now()` — la vista interna non viene mai servita dalla cache del browser.
-- **Cache busting — script principale**: a differenza della vista interna, il tag `<script type="module" src="./plugins/worktable/app-worktable-explorer.js?v=...">` usa `filemtime()` calcolato in `dashboard-worktable-explorer.inc.php` (stesso pattern di MCP Tester e Home in questo plugin), non `Date.now()`.
+- **Cache busting — script principale**: a differenza della vista interna, il tag `<script type="module" src="./plugins/worktable/app-worktable-explorer.js?v=...">` usa `filemtime()` calcolato in `dashboard-worktable-explorer.inc.php` (stesso pattern di MCP Checker e Home in questo plugin), non `Date.now()`.
 - **Paginazione doppia**: `renderPagination()` sopra e sotto `renderTable()`.
 - **Eliminazione ottimistica**: `remove` → splice in-place + `total--`, senza reload.

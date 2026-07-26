@@ -1,20 +1,20 @@
 // Italiano — plugin worktable
-mcp.field.url = URL endpoint MCP
-mcp.field.url.placeholder = https://example.com/mcp
-mcp.field.authHeader = Header Authorization (opzionale)
-mcp.field.authHeader.placeholder = Bearer <token>
-mcp.btn.connect = Connetti
-mcp.btn.connecting = Connessione…
-mcp.error.invalidUrl = Inserisci un URL http:// o https:// valido.
-mcp.error.step.initialize = Handshake (initialize) fallito: %s
-mcp.error.step.tools = Recupero strumenti fallito: %s
-mcp.serverInfo.title = Server
-mcp.serverInfo.name = Nome
-mcp.serverInfo.version = Versione
-mcp.serverInfo.protocol = Versione protocollo
-mcp.tools.title = Strumenti (%s)
-mcp.tools.empty = Questo server non espone alcuno strumento.
-mcp.tools.inputSchema = Schema input
+mcpChecker.field.url = URL endpoint MCP
+mcpChecker.field.url.placeholder = https://example.com/mcp
+mcpChecker.field.authHeader = Header Authorization (opzionale)
+mcpChecker.field.authHeader.placeholder = Bearer <token>
+mcpChecker.btn.connect = Connetti
+mcpChecker.btn.connecting = Connessione…
+mcpChecker.error.invalidUrl = Inserisci un URL http:// o https:// valido.
+mcpChecker.error.step.initialize = Handshake (initialize) fallito: %s
+mcpChecker.error.step.tools = Recupero strumenti fallito: %s
+mcpChecker.serverInfo.title = Server
+mcpChecker.serverInfo.name = Nome
+mcpChecker.serverInfo.version = Versione
+mcpChecker.serverInfo.protocol = Versione protocollo
+mcpChecker.tools.title = Strumenti (%s)
+mcpChecker.tools.empty = Questo server non espone alcuno strumento.
+mcpChecker.tools.inputSchema = Schema input
 
 endpoints.mcpEndpoint.label = Endpoint MCP di questa app
 endpoints.restApi.label = URL base delle API REST di questa app
