@@ -22,11 +22,17 @@ if (!function_exists('ai_load_lang')) {
 $camilaUI = new CamilaUserInterface();
 $scheme   = $camilaUI->isHttps() ? 'https' : 'http';
 $host     = $_SERVER['HTTP_HOST'];
+// Base path derived from the currently-executing script (cf_app.php lives in the app
+// directory, alongside cf_api.php) instead of a hardcoded '/app/<CAMILA_APP_DIR>/' —
+// so the API URL stays correct when the app is served under a URL prefix, e.g. behind
+// a reverse proxy in a subfolder. Same approach as CamilaUserInterface::mountMiniApp().
+$appBasePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+$apiUrl      = $scheme . '://' . $host . $appBasePath . '/cf_api.php';
 $config   = [
-    'baseUrl'           => $scheme . '://' . $host . '/app/' . CAMILA_APP_DIR . '/cf_api.php',
+    'baseUrl'           => $apiUrl,
     'apiKeyHeaderName'  => 'Authorization',
     'apiKeyHeaderValue' => 'PHPSESSID',
-    'mcpDefaultUrl'     => $scheme . '://' . $host . '/app/' . CAMILA_APP_DIR . '/cf_api.php?mcp=1',
+    'mcpDefaultUrl'     => $apiUrl . '?mcp=1',
 ];
 
 $lang = ai_load_lang(__DIR__ . '/lang', $_CAMILA['lang'] ?? 'en');

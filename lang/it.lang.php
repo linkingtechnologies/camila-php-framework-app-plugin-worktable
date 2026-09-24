@@ -37,3 +37,22 @@ endpoints.openai.warnAuth = Da verificare: la configurazione dei connettori di C
 
 home.welcome.title = Benvenuto
 home.welcome.message = Questa è la pagina iniziale del plugin worktable.
+
+tools.intro = Script Python di supporto per questa istanza WorkTable.
+tools.empty = Nessuno script scaricabile trovato nella cartella tools/ del plugin.
+tools.desc.client = Libreria client: incapsula le API REST di questa istanza (record, filtri, colonne, permessi, allegati, endpoint personalizzati). Viene importata dagli altri script, non si esegue da sola.
+tools.desc.sync = Script interattivo: copia i dati da un'istanza WorkTable a un'altra — una tabella, tutte le tabelle visibili, oppure i template. Richiede worktable_client.py nella stessa cartella.
+tools.desc.envLocale = Modello di configurazione per una singola istanza: URL delle API più utente e password.
+tools.desc.envSync = Modello di configurazione per worktable_sync.py: URL e credenziali dell'istanza di origine e di quella di destinazione.
+tools.btn.download = Scarica
+tools.btn.downloadAll = Scarica tutti
+tools.btn.retry = Riprova
+tools.error.auth = Sessione scaduta o permessi insufficienti.
+tools.error.network = Problema di connessione. Controlla la rete.
+tools.error.server = Errore del server. Riprova più tardi.
+tools.error.notFound = File non trovato sul server.
+tools.error.generic = Si è verificato un errore.
+tools.usage.title = Come si usano
+tools.usage.step1 = 1. Installa le dipendenze:
+tools.usage.step2 = 2. Copia l'esempio .env accanto agli script, rinominalo (.env.locale oppure .env.sync) e compila URL e credenziali. WORKTABLE_BASE_URL deve puntare al cf_api.php di questa app — vedi il tab Endpoints.
+tools.usage.step3 = 3. Esegui lo script da quella cartella:

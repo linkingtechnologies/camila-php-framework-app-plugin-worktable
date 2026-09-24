@@ -37,3 +37,22 @@ endpoints.openai.warnAuth = Unconfirmed: ChatGPT's connector setup is reported t
 
 home.welcome.title = Welcome
 home.welcome.message = This is the worktable plugin's landing page.
+
+tools.intro = Python helper scripts for this WorkTable instance.
+tools.empty = No downloadable scripts found in the plugin's tools/ directory.
+tools.desc.client = Client library: wraps this instance's REST API (records, filters, columns, permissions, attachments, custom endpoints). Imported by the other scripts, not run on its own.
+tools.desc.sync = Interactive script: copies data from one WorkTable instance to another — one table, every visible table, or the templates. Needs worktable_client.py in the same directory.
+tools.desc.envLocale = Settings template for a single instance: API URL plus username and password.
+tools.desc.envSync = Settings template for worktable_sync.py: URL and credentials of the source instance and of the destination one.
+tools.btn.download = Download
+tools.btn.downloadAll = Download all
+tools.btn.retry = Retry
+tools.error.auth = Session expired or insufficient permissions.
+tools.error.network = Connection problem. Check your network.
+tools.error.server = Server error. Please try again later.
+tools.error.notFound = File not found on the server.
+tools.error.generic = An error occurred.
+tools.usage.title = How to use them
+tools.usage.step1 = 1. Install the dependencies:
+tools.usage.step2 = 2. Copy the .env example next to the scripts, rename it (.env.locale or .env.sync) and fill in your URLs and credentials. WORKTABLE_BASE_URL must point at this app's cf_api.php — see the Endpoints tab.
+tools.usage.step3 = 3. Run the script from that directory:

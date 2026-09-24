@@ -49,7 +49,7 @@ None.
 
 ## Payload
 
-No network calls. `state.mcpUrl` / `state.restApiUrl` come entirely from `window.APP_CONFIG.mcpDefaultUrl` / `window.APP_CONFIG.baseUrl`, injected server-side by `dashboard-endpoints.inc.php`. `mcpDefaultUrl` uses the same computation as the MCP Checker's default (`$scheme://$host/app/{CAMILA_APP_DIR}/cf_api.php?mcp=1`); `baseUrl` is the same value without `?mcp=1`.
+No network calls. `state.mcpUrl` / `state.restApiUrl` come entirely from `window.APP_CONFIG.mcpDefaultUrl` / `window.APP_CONFIG.baseUrl`, injected server-side by `dashboard-endpoints.inc.php`. Both are built from one derived `$apiUrl` = `$scheme://$host` + `dirname($_SERVER['SCRIPT_NAME'])` + `/cf_api.php` — the app's own base path rather than a hardcoded `/app/{CAMILA_APP_DIR}/`, so the URLs shown stay correct when the app is served under a URL prefix (reverse proxy in a subfolder). `mcpDefaultUrl` is that value plus `?mcp=1`; `baseUrl` is it unchanged. The MCP Checker's default uses the identical computation.
 
 The Claude Desktop config snippet is generated client-side (not injected by PHP):
 

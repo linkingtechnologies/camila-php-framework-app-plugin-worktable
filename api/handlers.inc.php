@@ -15,8 +15,41 @@
  *   Body: { url, authHeader?, sessionId?, payload }
  *   Returns: { httpStatus, sessionId, body, raw }
  *
+ * GET /tools                                                         [PRIVATE]
+ *   Lists the downloadable helper scripts in the plugin's tools/ directory.
+ *   Returns: { files: [{ name, size, lang }] }
+ *
  * ─────────────────────────────────────────────────────────────────────────────
  */
+
+/**
+ * Files listed by GET /tools.
+ *
+ * Only *.py and *.example are listed: those ship with the plugin and are public
+ * (the SPA links them directly as static assets under plugins/worktable/tools/).
+ * A real .env, which an operator creates locally from a .example template and
+ * which holds plaintext credentials, matches neither pattern and is therefore
+ * never advertised here.
+ */
+if (!function_exists('wt_tools_files')) {
+    function wt_tools_files(): array {
+        $real = realpath(__DIR__ . '/../tools');
+        if ($real === false) return [];
+
+        // scandir(), not glob(): the .env.*.example files are dotfiles and glob()
+        // skips names starting with a dot.
+        $out = [];
+        foreach (scandir($real) ?: [] as $name) {
+            if ($name === '.' || $name === '..') continue;
+            if (!str_ends_with($name, '.py') && !str_ends_with($name, '.example')) continue;
+            $path = $real . DIRECTORY_SEPARATOR . $name;
+            if (!is_file($path)) continue;
+            $out[$name] = $path;
+        }
+        ksort($out);
+        return $out;
+    }
+}
 
 return [
 
@@ -101,5 +134,19 @@ return [
             'raw'        => $bodyJson === null ? $rawBody : null,
         ];
     },
+
+    // GET /worktable/tools
+    'GET /tools' => function ($params, $body, $segments) {
+        $files = [];
+        foreach (wt_tools_files() as $name => $path) {
+            $files[] = [
+                'name' => $name,
+                'size' => filesize($path) ?: 0,
+                'lang' => str_ends_with($name, '.py') ? 'python' : 'env',
+            ];
+        }
+        return ['files' => $files];
+    },
+
 
 ];

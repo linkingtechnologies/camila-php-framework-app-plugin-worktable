@@ -20,4 +20,9 @@
   <title>MCP Checker</title>
   <url>?dashboard=mcp-checker</url>
  </tab>
+ <tab>
+  <id>tools</id>
+  <title>Tools</title>
+  <url>?dashboard=tools</url>
+ </tab>
 </menu>

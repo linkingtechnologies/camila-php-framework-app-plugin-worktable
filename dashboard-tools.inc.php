@@ -1,10 +1,9 @@
 <?php
-// Home dashboard — worktable plugin
+// Tools dashboard — worktable plugin
+// Lets an operator download the plugin's Python helper scripts (tools/).
 // Manual mount pattern (see AGENTS.md): APP_CONFIG / I18N must be injected before the module loads.
 // NOTE: local translations array must NOT be named $i18n (see AGENTS.md "Naming warning" —
 // this file is require()'d at global scope and would overwrite camila's own global $i18n).
-//
-// Placeholder landing page — just a welcome message for now.
 
 global $_CAMILA;
 
@@ -40,8 +39,24 @@ $config   = [
 
 $lang       = ai_load_lang(__DIR__ . '/lang', $_CAMILA['lang'] ?? 'en');
 $pluginI18n = [
-    'home.welcome.title'   => $lang['home.welcome.title'] ?? '',
-    'home.welcome.message' => $lang['home.welcome.message'] ?? '',
+    'tools.intro'            => $lang['tools.intro'] ?? '',
+    'tools.empty'            => $lang['tools.empty'] ?? '',
+    'tools.desc.client'      => $lang['tools.desc.client'] ?? '',
+    'tools.desc.sync'        => $lang['tools.desc.sync'] ?? '',
+    'tools.desc.envLocale'   => $lang['tools.desc.envLocale'] ?? '',
+    'tools.desc.envSync'     => $lang['tools.desc.envSync'] ?? '',
+    'tools.btn.download'     => $lang['tools.btn.download'] ?? '',
+    'tools.btn.downloadAll'  => $lang['tools.btn.downloadAll'] ?? '',
+    'tools.btn.retry'        => $lang['tools.btn.retry'] ?? '',
+    'tools.error.auth'       => $lang['tools.error.auth'] ?? '',
+    'tools.error.network'    => $lang['tools.error.network'] ?? '',
+    'tools.error.server'     => $lang['tools.error.server'] ?? '',
+    'tools.error.notFound'   => $lang['tools.error.notFound'] ?? '',
+    'tools.error.generic'    => $lang['tools.error.generic'] ?? '',
+    'tools.usage.title'      => $lang['tools.usage.title'] ?? '',
+    'tools.usage.step1'      => $lang['tools.usage.step1'] ?? '',
+    'tools.usage.step2'      => $lang['tools.usage.step2'] ?? '',
+    'tools.usage.step3'      => $lang['tools.usage.step3'] ?? '',
 ];
 
 $refrCode  = "<script src='../../camila/js/worktable-client.js'></script>";
@@ -62,6 +77,6 @@ HTML;
 
 $_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, $html));
 $_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css\" rel=\"stylesheet\">\n");
-$homeScriptVersion = @filemtime(__DIR__ . '/app-home.js');
-$homeVerSuffix     = $homeScriptVersion ? ('?v=' . $homeScriptVersion) : '';
-$_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/worktable/app-home.js' . $homeVerSuffix . '"></script>');
+$toolsScriptVersion = @filemtime(__DIR__ . '/app-tools.js');
+$toolsVerSuffix     = $toolsScriptVersion ? ('?v=' . $toolsScriptVersion) : '';
+$_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/worktable/app-tools.js' . $toolsVerSuffix . '"></script>');

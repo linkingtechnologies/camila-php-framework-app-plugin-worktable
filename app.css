@@ -40,3 +40,24 @@ tr.is-readonly input {
   border-top: 3px solid #3273dc;
   box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.06);
 }
+
+/* === Roomy list table — short action lists, not dense admin grids === */
+#app .table.is-vcentered td,
+#app .table.is-vcentered th {
+  vertical-align: middle;
+}
+
+#app .table .tools-icon-cell {
+  width: 1%;
+  padding-right: 0;
+}
+
+#app .table .tools-name code {
+  font-size: 1rem;
+}
+
+#app .table .tools-size,
+#app .table .tools-action {
+  width: 1%;
+  white-space: nowrap;
+}
