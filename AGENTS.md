@@ -21,7 +21,7 @@ The primary goal is to build administrative tools without introducing unnecessar
 
 ```
 AGENTS.md
-api/handlers.inc.php            custom REST endpoints (GET /status, POST /mcp-proxy, GET /tools*)
+api/handlers.inc.php            custom REST endpoints (status, mcp-proxy, tools, vardir)
 app.css                         shared SPA styles (.spa-title-box, kiosk table styles)
 conf/menu.xml                   tab bar — declares the dashboards and their order
 conf/repo.json                  GitHub repo metadata (upstream: camila-php-framework-app-plugin-worktable)
@@ -31,7 +31,8 @@ app-<name>.js                   one entry point per SPA
 views/<spa>/index.js            optional view module for a larger SPA
 lang/{en,it}.lang.php           plugin i18n keys
 specs/<spa>/{use-case,design}.md
-tools/                          Python helper scripts, downloadable from the Tools tab
+tools/                          helper scripts: Python clients (downloadable from the
+                                Tools tab) and rotate_vardir.php (CLI only)
 ```
 
 | Tab (menu.xml) | Dashboard id | Mount | Entry point | Spec |
@@ -41,6 +42,7 @@ tools/                          Python helper scripts, downloadable from the Too
 | Endpoints | `endpoints` | `dashboard-endpoints.inc.php` | `app-endpoints.js` | `specs/endpoints/` |
 | MCP Checker | `mcp-checker` | `dashboard-mcp-checker.inc.php` | `app-mcp-checker.js` | `specs/mcp-checker/` |
 | Tools | `tools` | `dashboard-tools.inc.php` | `app-tools.js` | `specs/tools/` |
+| Configuration | `config` | `dashboard-config.inc.php` | `app-config.js` | `specs/config/` |
 
 `home` is the plugin's default tab because it is the first `<tab>` in `conf/menu.xml`.
 
@@ -56,10 +58,27 @@ Everything under `plugins/worktable/` is served statically by the web server for
 
 Consequences:
 
+The framework can also be configured for MySQL or PostgreSQL instead of the bundled
+SQLite, which changes what that directory contains: no `camila.db`, but still uploads,
+logs, templates and generated worktable configuration. Any check written against a
+database file is wrong on those instances — it finds nothing and reports safety. Probe
+something that is actually there, and report "cannot tell" when there is nothing to
+probe rather than a green tick.
+
 - **Never put a secret in this directory.** `tools/.env.sync` and `tools/.env.locale`, created by an operator from the shipped `.example` templates, hold plaintext usernames and passwords for the source *and* destination instances. They belong outside the document root; nothing in the repo's `.gitignore` covers `.env*` either.
 - Files that ship with the plugin are public by nature — the plugin's own repository is public — so linking them at their static path is fine and is what the Tools SPA does (`plugins/worktable/tools/<name>`, relative, with the `download` attribute). Keep such links relative so they survive a URL prefix.
 - Route a download through an authenticated endpoint only when the file is *not* public. Nothing in this plugin currently needs that.
 - Server-side listings must still whitelist what they advertise, so an operator-created `.env` never appears in a file list.
+
+The same exposure applies to the **instance data directory** one level up, and there it is
+much worse: `CAMILA_VAR_ROOTDIR` (`<app>/var`) holds the SQLite database, uploaded files,
+logs and generated worktable configuration, and on this nginx deployment
+`GET /app/<app>/var/db/camila.db` returns the whole database — users, password hashes and
+API tokens included — with no session. The `.htaccess` in that directory denies access on
+Apache only; nginx ignores it. The Configuration tab can rename the directory to an
+unguessable name, but that is obscurity: the actual fix is a deny rule in the server
+config, which that tab also shows.
+
 
 ---
 
@@ -294,7 +313,7 @@ Avoid fixed widths unless needed for compact action columns.
 
 There are two independent cache-busting layers. Preserve both.
 
-**1. Boot script (PHP side).** Each mount appends the entry point's own `filemtime()` to its `<script type="module">` tag, so a deployed change is picked up but an unchanged file still caches:
+**1. Boot script and stylesheet (PHP side).** Each mount appends the file's own `filemtime()` to both its `<script type="module">` tag and its `app.css` link, so a deployed change is picked up but an unchanged file still caches. Both matter: a stylesheet linked without a version stays cached across edits, which is easy to miss because the JS keeps updating and the CSS silently does not.
 
 ```php
 $ver    = @filemtime(__DIR__ . '/app-<name>.js');
@@ -471,9 +490,12 @@ $html = <<<HTML
 HTML;
 
 $_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, $html));
-$_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css\" rel=\"stylesheet\">\n");
 
-// Boot script cache-busting — see "Module loading and cache busting"
+// Cache-busting, both files — see "Module loading and cache busting"
+$cssVersion = @filemtime(__DIR__ . '/app.css');
+$cssSuffix  = $cssVersion ? ('?v=' . $cssVersion) : '';
+$_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css" . $cssSuffix . "\" rel=\"stylesheet\">\n");
+
 $scriptVersion = @filemtime(__DIR__ . '/app-<name>.js');
 $verSuffix     = $scriptVersion ? ('?v=' . $scriptVersion) : '';
 $_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/worktable/app-<name>.js' . $verSuffix . '"></script>');
@@ -547,6 +569,18 @@ Rules:
 - `en.lang.php` and `it.lang.php` must carry the same key set; both are maintained here
 - Keys are namespaced by SPA (`home.*`, `endpoints.*`, `mcpChecker.*`) in one shared file per language
 - The mount lists every key it passes explicitly, each with an `?? ''` fallback — no wildcard/prefix export. A key added to the lang file but not to the mount never reaches the browser.
+
+**CLI scripts use the same files.** A script under `tools/` reads `lang/<lang>.lang.php`
+directly with the same parser and the same `en` fallback, under its own `cli.` prefix,
+and takes the language from a `--lang=xx` flag (default `en`). Because no dashboard
+mount lists `cli.*` keys, they never reach the browser — the prefix is what keeps the
+two audiences apart in one file. Terminal output needs line breaks that a browser
+would get from markup, so a CLI loader additionally turns a literal `\n` in a value
+into a real newline; keep that escape out of keys the web UI reads.
+
+Do not hardcode operator-facing strings in a CLI script just because it is "only a
+tool": it is part of the same product and the same two languages are already there.
+`tools/rotate_vardir.php` is the worked example.
 
 ## JS i18n helper
 
@@ -701,6 +735,8 @@ This plugin's own endpoints live in `api/handlers.inc.php`:
 | Route | Purpose |
 |---|---|
 | `GET /worktable/status` | liveness check → `{ status: "ok" }` |
+| `GET /worktable/vardir` | **admin only.** State of `CAMILA_VAR_ROOTDIR` plus the preflight for rotating it → `{ currentName, base, rotated, targetName, checks, warnings, canRotate, token }` |
+| `POST /worktable/vardir/rotate` | **admin only.** Renames `CAMILA_VAR_ROOTDIR` to `<base>-<guid>` and writes a one-line stub at the old path. Body `{ targetName, token }`, plus `defer: true` to hand the job to a detached retrying process instead (no web-server restart). Rolls back on any failure after the rename. See `specs/config/`. |
 | `GET /worktable/tools` | lists the downloadable files in `tools/` (`*.py` + `*.example`, via `scandir()` so dotfiles are included) → `{ files: [{ name, size, lang }] }`. The Tools SPA links the files themselves as static assets. |
 | `POST /worktable/mcp-proxy` | forwards one JSON-RPC 2.0 message to an arbitrary MCP Streamable HTTP endpoint, sidestepping browser CORS. Body `{ url, authHeader?, sessionId?, payload }` → `{ httpStatus, sessionId, body, raw }`. Parses both `application/json` and `text/event-stream` (`data:` lines) responses, and surfaces `Mcp-Session-Id` from the response headers. Used by the MCP Checker SPA. |
 
@@ -736,6 +772,53 @@ A file that does not `return` an array (e.g. a bare procedural script with `if (
 ```
 
 Use this sparingly and never for anything that reads or writes table data.
+
+**Administrator-only routes.** The API auth middleware sets `$_CAMILA['adm_user_group']`;
+it equals `CAMILA_ADM_USER_GROUP` both for users in the admin group and for users whose
+group is empty (the framework's "no restriction" convention — see
+`camila/auth.class.inc.php`). A destructive route checks it first and returns 403 rather
+than relying on the SPA hiding a button:
+
+```php
+if (!wt_is_admin()) {
+    return ['__status' => 403, 'error' => 'admin_required'];
+}
+```
+
+The frontend permission rules in "Security and Safety" still apply: the check above is
+the authoritative one, the UI guard is a convenience.
+
+**A remedy the user cannot reach is not a remedy.** An operation that can only succeed
+with the web server stopped cannot be offered solely as a button in a page that server
+has to serve, and its error message must never say "stop the server and retry" — there
+would be nothing left to retry on.
+
+Before settling for "stop the server", check whether the obstacle is the *current
+request* rather than the platform. If it is, a detached CLI process that retries past
+the end of that request removes the restart entirely: spawn it, return immediately, and
+let it win once PHP releases whatever it was holding. `specs/config/` measures this —
+the spawn returns in ~60 ms and the operation completes about two seconds later, with
+no restart. Keep the manual command as the third option, have the endpoint return that
+script's absolute path, and let the failure message show the exact command.
+
+When an endpoint delegates to a CLI script, pass the confirmed parameters through
+(`--target=...`) instead of letting the script re-derive them, or the response will
+promise something the script does not do. Validate them again inside the script: a CLI
+entry point cannot assume its caller sanitised anything.
+
+**Do not spawn `PHP_BINARY`.** Inside a request it is whichever SAPI is serving —
+`php-cgi.exe` here, since nginx runs this app as a farm of FastCGI workers. A script
+guarded with `PHP_SAPI !== 'cli'` then refuses to run and exits silently, which looks
+exactly like a job that is still working. Resolve the CLI binary next to it
+(`php.exe` / `php`) and fail with a named error if it is not there, so the UI can say
+so instead of waiting for a timeout.
+
+A CLI script that lives in the plugin directory is inside the document root, where the
+web server executes `.php`. Its first statement guards the SAPI:
+
+```php
+if (PHP_SAPI !== 'cli') { http_response_code(403); exit(1); }
+```
 
 **Diagnostics.** `GET /status/plugins` reports every plugin file the API tried to load, whether it loaded, each route it registered, and the reason any of them did not — `file not found`, `file did not return an array`, `handler not callable`, `invalid route format`. Check it first when a `client.call()` 404s; it distinguishes "my file was ignored" from "my path is wrong".
 
@@ -1194,6 +1277,8 @@ specs/
   worktable-explorer/    use-case.md  design.md
   endpoints/             use-case.md  design.md
   mcp-checker/           use-case.md  design.md
+  tools/                 use-case.md  design.md
+  config/                use-case.md  design.md
 ```
 
 If implementation and specification disagree, report the discrepancy. Do not silently change behavior.
@@ -1226,6 +1311,7 @@ Plugin-specific checks:
 - the page renders without the client: with `WorkTableClient` missing, the guard message shows instead of a blank page
 - attachments, when used: badge from `listAttachments()`, thumbnail via blob URL (not `attachmentUrl`), object URLs revoked on close
 - the mount emits no output before `add_raw` (no stray whitespace, no closing `?>`), and the top menu still renders — a `$i18n` collision breaks it (see "Naming warning")
+- destructive endpoints, when present: a non-admin caller gets 403, a tampered or traversing parameter is refused before anything is touched, and a failure part-way through leaves the filesystem exactly as it was. Exercise these against a sandbox copy, never against the live data directory.
 
 ---
 

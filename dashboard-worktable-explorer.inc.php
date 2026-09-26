@@ -37,7 +37,11 @@ $html = <<<HTML
 HTML;
 
 $_CAMILA['page']->add_raw(new HAW_raw(HAW_HTML, $html));
-$_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css\" rel=\"stylesheet\">\n");
+// app.css is cache-busted the same way as the boot script: without it a
+// stylesheet change never reaches a browser that already cached it.
+$cssVersion = @filemtime(__DIR__ . '/app.css');
+$cssSuffix  = $cssVersion ? ('?v=' . $cssVersion) : '';
+$_CAMILA['page']->camila_add_js("<link href=\"plugins/worktable/app.css" . $cssSuffix . "\" rel=\"stylesheet\">\n");
 $wtExplorerScriptVersion = @filemtime(__DIR__ . '/app-worktable-explorer.js');
 $wtExplorerVerSuffix     = $wtExplorerScriptVersion ? ('?v=' . $wtExplorerScriptVersion) : '';
 $_CAMILA['page']->camila_add_js('<script type="module" src="./plugins/worktable/app-worktable-explorer.js' . $wtExplorerVerSuffix . '"></script>');

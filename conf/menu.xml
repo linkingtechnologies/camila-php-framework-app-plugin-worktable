@@ -25,4 +25,9 @@
   <title>Tools</title>
   <url>?dashboard=tools</url>
  </tab>
+ <tab>
+  <id>config</id>
+  <title>Configuration</title>
+  <url>?dashboard=config</url>
+ </tab>
 </menu>
