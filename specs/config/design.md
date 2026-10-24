@@ -101,6 +101,37 @@ automatically, because the real config defines
 Verified in a sandbox: after a rotation, loading the stub in a clean PHP process
 resolves `CAMILA_VAR_ROOTDIR` to the rotated directory.
 
+## Why a sibling directory and not `var/<guid>/`
+
+Nesting the rotated directory inside `var/` looks tidier and would let a web-server
+rule target one fixed prefix. It cannot work here, because the instance config
+derives the app's own identity from its location:
+
+```php
+define('CAMILA_VAR_ROOTDIR', dirname(__FILE__));
+define('CAMILA_APP_PATH',    dirname(CAMILA_VAR_ROOTDIR));
+define('CAMILA_APP_DIR',     basename(dirname(CAMILA_VAR_ROOTDIR)));
+define('CAMILA_HOMEDIR',     dirname(CAMILA_VAR_ROOTDIR));
+```
+
+and `config.php` then builds `CAMILA_APPLICATION_PREFIX = CAMILA_APP_DIR . '_'` —
+the **database table prefix**. Simulated over the three layouts:
+
+| Layout | `CAMILA_APP_PATH` | `CAMILA_APP_DIR` | table prefix |
+|---|---|---|---|
+| `<app>/var/` (original) | `<app>` | `segreteriacampo` | `segreteriacampo_` |
+| `<app>/var-<guid>/` (current) | `<app>` | `segreteriacampo` | `segreteriacampo_` |
+| `<app>/var/<guid>/` (nested) | `<app>/var` | `var` | `var_` |
+
+The nested layout would make the app look for `var_*` tables and would point
+`CAMILA_HOMEDIR` at `<app>/var`, breaking plugin discovery. Making it work means
+patching `1270014001.inc.php` to use `dirname(..., 2)` — the per-instance file the
+stub approach exists to avoid touching, and one the installer regenerates.
+
+The sibling layout keeps every derived constant identical to an unrotated install,
+which is exactly why the rotation needs no other change. The nginx rule covers both
+shapes in one block (`var(-[0-9a-f]{32})?/`), so the tidiness argument buys little.
+
 ## Base name and repeatability
 
 "Rotating" is repeatable, so the target cannot be derived from the current name
@@ -153,6 +184,38 @@ parenthesis`. The rule is shipped in the bundle templates
 location so that `var/config.php` is denied rather than executed, next to a companion
 rule that denies dotfiles (`.env` and friends) while still allowing `*.example` and
 `/.well-known/`.
+
+## Platform behaviour
+
+The whole lock problem is a Windows one. Measured:
+
+| Platform | `rename()` of the data directory with the database open inside |
+|---|---|
+| Windows (NTFS, PDO SQLite open) | fails — *Access is denied (code: 5)* |
+| Linux (ext4, fd held on a file inside) | **succeeds**, and the holding process keeps reading |
+
+POSIX renames the directory entry; open descriptors follow the inode, so nothing
+breaks. On Linux the immediate button simply works, the `windows_open_handle`
+warning never appears (it is guarded by `PHP_OS_FAMILY`), and the deferred mode and
+CLI script are fallbacks rather than the normal path.
+
+What does bite on Linux instead is ownership: the web server user must be able to
+write the *parent* directory to rename a child into it, and a hardened deployment
+often gives `www-data` write access only inside `var/`. That is the
+`parentWritable` preflight check, which fails cleanly and blocks before anything is
+touched — the operator then runs the CLI script as the owning user.
+
+Two platform-specific details that had to be fixed rather than assumed:
+
+- `wt_cli_php()` cannot just look next to `PHP_BINARY`. On the Windows bundles
+  `php.exe` and `php-cgi.exe` share a directory, but a distro puts php-fpm in
+  `/usr/sbin` and the CLI in `/usr/bin`. It now walks `PATH` as well and returns
+  `''` when nothing executable is found, so the caller answers `no_cli_binary`
+  instead of spawning an unverified name that would fail silently.
+- `avvia_server.bat` / `ferma_server.bat` exist only in the Windows bundles. Those
+  names are no longer inside translatable strings; the script appends them through
+  `server_hint()` and the SPA through `serverHint()`, both gated on the platform
+  (`isWindows`, reported by `GET /vardir`).
 
 ## Three ways to run it, and why
 

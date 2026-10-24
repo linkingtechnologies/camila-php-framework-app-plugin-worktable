@@ -179,11 +179,23 @@ if (!function_exists('wt_cli_php')) {
             return $current;
         }
 
+        // Next to the serving binary: true for the Windows bundles, where php.exe
+        // and php-cgi.exe sit in the same directory.
         $candidate = dirname($current) . DIRECTORY_SEPARATOR . $exe;
-        if (is_file($candidate)) return $candidate;
+        if (is_file($candidate) && is_executable($candidate)) return $candidate;
 
-        // Last resort: let the OS resolve it from PATH.
-        return $exe;
+        // On a distro php-fpm lives in /usr/sbin while the CLI is in /usr/bin, so
+        // "next to it" finds nothing. Walk PATH rather than returning a bare name:
+        // a name we have not resolved would be spawned and fail silently, which is
+        // indistinguishable from a job still running. Returning '' lets the caller
+        // answer no_cli_binary instead.
+        foreach (explode(PATH_SEPARATOR, (string)getenv('PATH')) as $dir) {
+            if ($dir === '') continue;
+            $c = rtrim($dir, "/\\") . DIRECTORY_SEPARATOR . $exe;
+            if (is_file($c) && is_executable($c)) return $c;
+        }
+
+        return '';
     }
 }
 
@@ -372,6 +384,9 @@ return [
             // then press a button on a page that server has to serve.
             'cliScript'   => realpath(__DIR__ . '/../tools/rotate_vardir.php') ?: '',
             'cliPhp'      => wt_cli_php(),
+            // The bundle's start/stop scripts are Windows-only; the UI appends
+            // their names as a hint and must not invent them elsewhere.
+            'isWindows'   => stripos(PHP_OS_FAMILY, 'Windows') !== false,
             // Outcome of the most recent deferred run, so a reload after one shows
             // what happened instead of leaving the operator guessing.
             'lastRun'     => (function () {

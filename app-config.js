@@ -258,6 +258,12 @@ async function copyText(value, flag) {
 const copySnippet = () => copyText(NGINX_SNIPPET, "copied");
 const copyCommand = () => copyText(cliCommand(), "copiedCmd");
 
+// The bundle's start/stop scripts exist only on the Windows builds; the server
+// says which platform it is, so the hint is never shown on a Linux install.
+function serverHint(batName) {
+  return state.info?.isWindows ? ` (${batName})` : "";
+}
+
 // The exact command to run on the server, with the real absolute path.
 function cliCommand() {
   const path = state.failure?.cliScript || state.info?.cliScript || "";
@@ -408,25 +414,28 @@ function NginxStatus() {
   }
 }
 
-function NginxBox() {
+// Rendered right under the state table (not as a separate box further down the
+// page), because "Data directory over HTTP" in that table is the row this section
+// explains and fixes — the operator should not have to scroll past the preflight
+// checks to find out what a red tag there means.
+function NginxSection() {
   return html`
-    <div class="box">
-      <h4 class="title is-6 mb-2">${t("config.nginx.title")}</h4>
-      ${NginxStatus()}
-      <p class="mb-3">${t("config.nginx.body")}</p>
-      <div class="field has-addons">
-        <div class="control is-expanded">
-          <pre style="margin:0">${NGINX_SNIPPET}</pre>
-        </div>
-        <div class="control">
-          <button class="button is-info" @click=${copySnippet}>
-            <span class="icon"><i class="ri-file-copy-line"></i></span>
-            <span>${t("config.btn.copy")}</span>
-          </button>
-        </div>
+    <hr class="my-4">
+    <h4 class="title is-6 mb-2">${t("config.nginx.title")}</h4>
+    ${NginxStatus()}
+    <p class="mb-3">${t("config.nginx.body")}</p>
+    <div class="field has-addons">
+      <div class="control is-expanded">
+        <pre style="margin:0">${NGINX_SNIPPET}</pre>
       </div>
-      ${state.copied ? html`<p class="help is-success">${t("config.copied")}</p>` : ""}
+      <div class="control">
+        <button class="button is-info" @click=${copySnippet}>
+          <span class="icon"><i class="ri-file-copy-line"></i></span>
+          <span>${t("config.btn.copy")}</span>
+        </button>
+      </div>
     </div>
+    ${state.copied ? html`<p class="help is-success">${t("config.copied")}</p>` : ""}
   `;
 }
 
@@ -483,7 +492,7 @@ function App() {
               ${state.failure.error === "rename_failed" && cliCommand() ? html`
                 <p class="mt-4"><strong>${t("config.locked.howto.title")}</strong></p>
                 <ol class="ml-5">
-                  <li>${t("config.locked.step1")}</li>
+                  <li>${t("config.locked.step1")}${serverHint("ferma_server.bat")}</li>
                   <li>
                     ${t("config.locked.step2")}
                     <div class="field has-addons mt-2">
@@ -499,7 +508,7 @@ function App() {
                     </div>
                     ${state.copiedCmd ? html`<p class="help is-success">${t("config.copied")}</p>` : ""}
                   </li>
-                  <li>${t("config.locked.step3")}</li>
+                  <li>${t("config.locked.step3")}${serverHint("avvia_server.bat")}</li>
                 </ol>
               ` : ""}
             </div>
@@ -558,13 +567,12 @@ function App() {
 
         ${info ? html`
           ${StateBox(info)}
+          ${NginxSection()}
           ${Warnings(info)}
           ${state.confirming ? ConfirmPanel(info) : ""}
           ${ChecksBox(info)}
         ` : ""}
       </div>
-
-      ${NginxBox()}
     </div>
   `;
 }

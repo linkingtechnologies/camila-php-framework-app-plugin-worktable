@@ -98,6 +98,15 @@ function t(string $key, ...$args): string {
     return $s;
 }
 
+/**
+ * The bundles ship avvia_server.bat / ferma_server.bat, which only exist on the
+ * Windows builds. The name is not translatable, so it is appended here rather
+ * than baked into a lang value that a Linux install would also display.
+ */
+function server_hint(string $batName): string {
+    return stripos(PHP_OS_FAMILY, 'Windows') !== false ? ' (' . $batName . ')' : '';
+}
+
 /** Records the outcome where the web UI can read it back. */
 $writeLog = function (string $status, array $extra = []) use ($logFile) {
     if ($logFile === '') return;
@@ -239,7 +248,7 @@ if (!$renamed) {
     $e   = error_get_last();
     $msg = $e['message'] ?? '';
     $writeLog('rename_failed', ['attempts' => $attempts, 'message' => $msg]);
-    fail(t('cli.renameFailed', $attempts, $msg !== '' ? ': ' . $msg : ''));
+    fail(t('cli.renameFailed', $attempts, $msg !== '' ? ': ' . $msg : '', server_hint('ferma_server.bat')));
 }
 out(t('cli.renamed', basename($current), basename($target))
     . ($attempts > 1 ? '  ' . t('cli.renamed.attempt', $attempts) : ''));
@@ -277,7 +286,7 @@ if (!is_file($target . DIRECTORY_SEPARATOR . 'config.php') || !is_file($stubFil)
 $writeLog('ok', ['from' => basename($current), 'to' => basename($target), 'attempts' => $attempts]);
 
 out('');
-out($waitFor > 0 ? t('cli.done.noRestart') : t('cli.done.restart'));
+out($waitFor > 0 ? t('cli.done.noRestart') : t('cli.done.restart', server_hint('avvia_server.bat')));
 out(t('cli.done.dbGone'));
 out('');
 out(t('cli.reminder'));

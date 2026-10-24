@@ -806,6 +806,18 @@ When an endpoint delegates to a CLI script, pass the confirmed parameters throug
 promise something the script does not do. Validate them again inside the script: a CLI
 entry point cannot assume its caller sanitised anything.
 
+**Platform assumptions belong in code, not in translations.** The bundles ship
+`avvia_server.bat` / `ferma_server.bat`, which exist only on the Windows builds; a
+lang value naming them is shown verbatim on a Linux install. Keep such names out of
+the translatable text and append them from code, gated on the platform — the server
+reports it, so the SPA does not have to guess.
+
+The same applies to behaviour: renaming a directory that holds an open file fails on
+Windows and succeeds on Linux, where open descriptors follow the inode. Guard
+Windows-only warnings and workarounds with `PHP_OS_FAMILY` instead of presenting them
+everywhere, and remember that on Linux the blocker is usually ownership of the parent
+directory rather than a lock.
+
 **Do not spawn `PHP_BINARY`.** Inside a request it is whichever SAPI is serving —
 `php-cgi.exe` here, since nginx runs this app as a farm of FastCGI workers. A script
 guarded with `PHP_SAPI !== 'cli'` then refuses to run and exits silently, which looks
