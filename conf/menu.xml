@@ -3,31 +3,43 @@
  <tab>
   <id>home</id>
   <title>Home</title>
+  <lic_title>menu.worktable.home</lic_title>
   <url>?dashboard=home</url>
  </tab>
  <tab>
   <id>worktable-explorer</id>
   <title>Worktable Explorer</title>
+  <lic_title>menu.worktable.explorer</lic_title>
   <url>?dashboard=worktable-explorer</url>
  </tab>
  <tab>
   <id>endpoints</id>
   <title>Endpoints</title>
+  <lic_title>menu.worktable.endpoints</lic_title>
   <url>?dashboard=endpoints</url>
  </tab>
  <tab>
   <id>mcp-checker</id>
   <title>MCP Checker</title>
+  <lic_title>menu.worktable.mcp-checker</lic_title>
   <url>?dashboard=mcp-checker</url>
  </tab>
  <tab>
   <id>tools</id>
   <title>Tools</title>
+  <lic_title>menu.worktable.tools</lic_title>
   <url>?dashboard=tools</url>
  </tab>
  <tab>
   <id>config</id>
   <title>Configuration</title>
+  <lic_title>menu.worktable.config</lic_title>
   <url>?dashboard=config</url>
+ </tab>
+ <tab>
+  <id>help</id>
+  <title>Help</title>
+  <lic_title>menu.worktable.help</lic_title>
+  <url>?dashboard=help</url>
  </tab>
 </menu>

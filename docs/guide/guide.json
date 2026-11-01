@@ -1,0 +1,17 @@
+{
+  "default": "en",
+  "languages": ["en", "it"],
+  "pagePrefix": "worktable--",
+  "general": {
+    "en": "docs/guide/en/general.md",
+    "it": "docs/guide/it/generale.md"
+  },
+  "guides": [
+    { "view": "home", "title": "Home", "group": { "en": "Pages", "it": "Pagine" } },
+    { "view": "worktable-explorer", "title": "Worktable Explorer", "group": { "en": "Pages", "it": "Pagine" } },
+    { "view": "endpoints", "title": "Endpoints", "group": { "en": "Pages", "it": "Pagine" } },
+    { "view": "mcp-checker", "title": "MCP Checker", "group": { "en": "Pages", "it": "Pagine" } },
+    { "view": "tools", "title": { "en": "Tools", "it": "Strumenti" }, "group": { "en": "Pages", "it": "Pagine" } },
+    { "view": "config", "title": { "en": "Configuration", "it": "Configurazione" }, "group": { "en": "Pages", "it": "Pagine" } }
+  ]
+}

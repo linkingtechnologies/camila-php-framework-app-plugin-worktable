@@ -154,3 +154,17 @@ cli.done.noRestart = Done. No restart needed: reload the page to see the new sta
 cli.done.restart = Done. Restart the web server%s.
 cli.done.dbGone = The database is no longer reachable at the old address.
 cli.reminder = Remember: renaming is obscurity, not access control. The rule that actually denies the directory, to add to the nginx server block:
+
+help.title = Help
+help.intro = The user guide covers every page of this plugin: what it is for, how to use it, and what each button does.
+help.btn.manual = Manual
+help.note = The manual opens in a new tab and does not need a session.
+
+// --- tab bar (conf/menu.xml <lic_title>): the only keys of this file merged into the shared dictionary ---
+menu.worktable.home = Home
+menu.worktable.explorer = Worktable Explorer
+menu.worktable.endpoints = Endpoints
+menu.worktable.mcp-checker = MCP Checker
+menu.worktable.tools = Tools
+menu.worktable.config = Configuration
+menu.worktable.help = Help

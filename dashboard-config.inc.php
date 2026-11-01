@@ -32,10 +32,14 @@ $host     = $_SERVER['HTTP_HOST'];
 // a reverse proxy in a subfolder. Same approach as CamilaUserInterface::mountMiniApp().
 $appBasePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
 $apiUrl      = $scheme . '://' . $host . $appBasePath . '/cf_api.php';
+require_once __DIR__ . '/app-version.inc.php';
 $config   = [
     'baseUrl'           => $apiUrl,
     'apiKeyHeaderName'  => 'Authorization',
     'apiKeyHeaderValue' => 'PHPSESSID',
+    // read by app-boot.js (cache-busted imports, language of the error boxes) and by the guide panel
+    'lang'              => $_CAMILA['lang'] ?? 'en',
+    'version'           => wt_app_version(),
 ];
 
 $lang       = ai_load_lang(__DIR__ . '/lang', $_CAMILA['lang'] ?? 'en');

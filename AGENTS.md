@@ -26,9 +26,19 @@ app.css                         shared SPA styles (.spa-title-box, kiosk table s
 conf/menu.xml                   tab bar — declares the dashboards and their order
 conf/repo.json                  GitHub repo metadata (upstream: camila-php-framework-app-plugin-worktable)
 dashboards.inc.php              tab dispatch — delegates to camila core
-dashboard-<id>.inc.php          one manual mount per SPA
-app-<name>.js                   one entry point per SPA
-views/<spa>/index.js            optional view module for a larger SPA
+dashboard-<id>.inc.php          one manual mount per SPA (dashboard-help.inc.php: a PHP page, no SPA)
+app-<name>.js                   one thin entry point per SPA: a shell around app-boot.js
+app-boot.js                     shared bootstrap: mountSpa() (copy of the segreteria-campo one)
+app-version.inc.php             cache-busting version the dashboards pass as APP_CONFIG.version
+views/<spa>/index.js            the view of every SPA
+views/<spa>/guide.<lang>.md     the user guide of that page, one per language
+views/shared/guide.js           Markdown parser, "?" panel and manual page
+guide.php                       the full manual (Help tab -> Manual)
+guide-version.inc.php           cache-busting version of the guides
+docs/guide/guide.json           index of the guides (languages, general guide, order)
+docs/guide/<lang>/              the general guide of each language
+docs/check-guides.php           drift check of the guides against the UI labels
+docs/build-guide.php            check + docs/<lang>/manual.odt (derived: regenerate, do not edit)
 lang/{en,it}.lang.php           plugin i18n keys
 specs/<spa>/{use-case,design}.md
 tools/                          helper scripts: Python clients (downloadable from the
@@ -37,18 +47,48 @@ tools/                          helper scripts: Python clients (downloadable fro
 
 | Tab (menu.xml) | Dashboard id | Mount | Entry point | Spec |
 |---|---|---|---|---|
-| Home | `home` | `dashboard-home.inc.php` | `app-home.js` | `specs/home/` |
+| Home | `home` | `dashboard-home.inc.php` | `app-home.js` + `views/home/index.js` | `specs/home/` |
 | Worktable Explorer | `worktable-explorer` | `dashboard-worktable-explorer.inc.php` | `app-worktable-explorer.js` + `views/worktable-explorer/index.js` | `specs/worktable-explorer/` |
-| Endpoints | `endpoints` | `dashboard-endpoints.inc.php` | `app-endpoints.js` | `specs/endpoints/` |
-| MCP Checker | `mcp-checker` | `dashboard-mcp-checker.inc.php` | `app-mcp-checker.js` | `specs/mcp-checker/` |
-| Tools | `tools` | `dashboard-tools.inc.php` | `app-tools.js` | `specs/tools/` |
-| Configuration | `config` | `dashboard-config.inc.php` | `app-config.js` | `specs/config/` |
+| Endpoints | `endpoints` | `dashboard-endpoints.inc.php` | `app-endpoints.js` + `views/endpoints/index.js` | `specs/endpoints/` |
+| MCP Checker | `mcp-checker` | `dashboard-mcp-checker.inc.php` | `app-mcp-checker.js` + `views/mcp-checker/index.js` | `specs/mcp-checker/` |
+| Tools | `tools` | `dashboard-tools.inc.php` | `app-tools.js` + `views/tools/index.js` | `specs/tools/` |
+| Configuration | `config` | `dashboard-config.inc.php` | `app-config.js` + `views/config/index.js` | `specs/config/` |
+| Help | `help` | `dashboard-help.inc.php` (PHP page: the **Manual** button) | — | — |
 
 `home` is the plugin's default tab because it is the first `<tab>` in `conf/menu.xml`.
 
 Known divergences already recorded in the specs — do not "fix" them silently:
 
 - `views/worktable-explorer/index.js` is a verbatim port from the sibling `segreteria-campo` plugin: all its UI strings are hardcoded Italian and it does not use `window.I18N` / the lang files.
+
+---
+
+## Guides and manual
+
+Every page has a user guide in Markdown, in English and Italian, and the plugin has its own manual (each plugin has its own). It is a copy of the system of the `segreteria-campo` plugin, adapted: the specification is in that plugin's `specs/guide/`.
+
+| File | What |
+|---|---|
+| `views/<spa>/guide.<lang>.md` | the guide of that page; the view id is the dashboard id |
+| `docs/guide/<lang>/general.md` (`generale.md` in Italian) | the general guide: the root of the manual |
+| `docs/guide/guide.json` | the index: languages (default `en`), `pagePrefix` (`worktable--`, so "Open the page" reaches the page from another plugin's application), the general guide of each language and the guides in order. `title` and `group` may be a string or `{ "en": …, "it": … }` |
+| `views/shared/guide.js` | parser, the "?" panel and the manual page; its interface texts are English and Italian |
+| `guide.php` | the full manual (`?lang=`, `?view=`); the **Manual** button of the Help tab opens it |
+| `docs/check-guides.php` | drift check |
+| `docs/build-guide.php` | check, then `docs/<lang>/manual.odt` for `--lang=en|it` |
+
+Rules for the authors:
+
+* **bold is a label exactly as the interface shows it**, in the language of the guide: `check-guides.php` looks for each one in the JS of the page and in `lang/<lang>.lang.php` of that language (a `%s` there reads as a number: write `N`). Emphasis is *italic*. `worktable-explorer` is the exception worth knowing: its screen is Italian only, so the English guide writes the Italian labels in bold and translates them in italic;
+* every guide has the same section ids in every language;
+* what could not be confirmed carries `[TO VERIFY]` (`[DA VERIFICARE]` in Italian); `build-guide.php --release` refuses a manual that has any;
+* a new page: add `dashboard-<id>.inc.php`, the tab, `views/<id>/index.js`, the guide in both languages and its entry in `guide.json`.
+
+Alignment rule: if a change alters what the operator sees or does — a label, a button, a field — the spec (`use-case.md`) and both guides are updated in the same change, and `php docs/build-guide.php --lang=en` and `--lang=it` are run before closing. Changes that alter nothing for the operator do not touch the guides.
+
+**The tab bar is translated.** Each `<tab>` of `conf/menu.xml` has the plain `<title>` (English, the fallback) and a `<lic_title>` key, `menu.worktable.<tab>`, whose text is in `lang/<lang>.lang.php`. The framework (`camila_plugin_lang_files()` in `camila/i18n.inc.php`) merges **only the lines of a plugin's lang file that start with `menu.`** into the shared dictionary, rebuilds its cache when such a file is newer, and `printHomeMenu()` shows the translation, or `<title>` when the language has none. A new tab needs its `<lic_title>` and the key in every language; the tab name used in the guides (`guide.json` `title`, the links in the general guide) is the one of that language's menu.
+
+The Help tab (`dashboard-help.inc.php`) is a PHP page, not a SPA: its texts are `help.*` in the lang files, and its button passes the page language to the manual.
 
 ---
 
@@ -343,56 +383,53 @@ Do not introduce a bundler requirement unless explicitly requested.
 
 # SPA Entry Points
 
-Each SPA has one `app-<name>.js` file at the plugin root, loaded as `<script type="module">` by its mount.
+Each SPA has one `app-<name>.js` file at the plugin root, loaded as `<script type="module">` by its mount. **The file is a shell**: everything common is in `app-boot.js`, everything specific is in `views/<name>/index.js`.
+
+```js
+// app-tools.js
+const VERSION = window.APP_CONFIG?.version || Date.now();
+
+import(`./app-boot.js?v=${VERSION}`).then(({ mountSpa }) =>
+  mountSpa({ view: "tools", exportName: "Tools" })
+);
+```
+
+`mountSpa()` finds `#app`, checks that `WorkTableClient` is there, builds the client, imports `views/<view>/index.js` with the version in the query string, renders what the view returns, and shows an error box if anything fails — a yellow "session no longer valid" box (with a sign-out button) for API codes 1011/1012, a red one otherwise. It also offers the guide "?" button of that page (see "Guides and manual"). Its texts are English and Italian, chosen by `APP_CONFIG.lang`.
+
+Why the import is dynamic and versioned: the mount emits the entry point's `<script>` with `?v=<filemtime>`, but a static `import` inside it would not carry that query, so the browser would keep the imported file in its cache for good. The same applies to everything a view imports from `views/shared/`.
+
+The dashboard passes `lang` (the page language) and `version` (newest mtime of the scripts, `wt_app_version()` in `app-version.inc.php`) in `APP_CONFIG`.
 
 An entry point must:
 
-1. Import `html` and `render` by relative path (see "Rendering")
-2. Obtain `root` via `document.getElementById("app")`
-3. Guard on `WorkTableClient` being present before using it (see below)
-4. Initialize `client` via `WorkTableClient(window.APP_CONFIG || {})` — skip this only if the SPA makes no API calls at all, as `app-home.js` does
-5. Define `VERSION` only if it dynamically imports a view module
-6. Define only the state properties the SPA actually uses
-7. Call `mount()` (or `render(App(), root)`) to start rendering
+1. be the shell above and nothing else — no state, no rendering;
+2. use the same name for the view folder, the dashboard id and the guide (`views/<id>/`, `dashboard-<id>.inc.php`, `view: "<id>"` in `guide.json`).
 
 ## `WorkTableClient` is a global, not a module
 
-`WorkTableClient` is a classic script (`camila/js/worktable-client.js`) that the mount injects *before* the module tag; it is not importable. Because a module runs after the document is parsed, the global is normally there — but every entry point still fails loudly rather than silently rendering a dead page:
-
-```js
-if (typeof WorkTableClient !== "function") {
-  render(html`<div class="notification is-danger">WorkTableClient not available</div>`, root);
-  throw Error("WorkTableClient not available");
-}
-```
-
-Keep this guard in every new entry point, including SPAs that do not call the API yet.
+`WorkTableClient` is a classic script (`camila/js/worktable-client.js`) that the mount injects *before* the module tag; it is not importable. Because a module runs after the document is parsed, the global is normally there — and `mountSpa()` fails loudly, with an error box, rather than silently rendering a dead page when it is not. The guard lives in `app-boot.js`: a view does not repeat it.
 
 ## View modules
 
-A SPA whose view does not comfortably fit in the entry point puts it in `views/<spa>/index.js` and dynamically imports it. The contract, as implemented by `worktable-explorer`:
+Every SPA puts its view in `views/<spa>/index.js`; the entry point never holds it. The contract, as implemented by `worktable-explorer`:
 
 ```js
-// entry point
-const { WorktableExplorer } = await import(`./views/worktable-explorer/index.js?v=${VERSION}`);
-render(await WorktableExplorer({ state, client, html, render, root }), root);
-
 // views/worktable-explorer/index.js
 export async function WorktableExplorer({ state, client, html, render, root }) {
   let records = [];                       // view-local state: plain closure variables
   function rerender() { render(view(), root); }
   function view() { return html`...`; }
   await loadTables();                     // initial load before first paint
-  return view();                          // entry point renders this; the view owns every later render
+  return view();                          // mountSpa renders this; the view owns every later render
 }
 ```
 
 Rules:
-- The view module imports nothing — `html`, `render`, `client` and `root` all arrive as arguments, which keeps the relative-path problem in one place.
-- It returns the *first* template and owns all subsequent renders through its own `rerender()`.
+- `html`, `render`, `client` and `root` arrive as arguments. A view whose code is written as module-level functions (`home`, `endpoints`, `tools`, `mcp-checker`, `config`) keeps them in `let html, render, root, client;` at the top and assigns them in its exported function — same contract, less rewriting.
+- It returns the *first* template and owns all subsequent renders through its own `rerender()` / `mount()`.
+- **Do not start a load that can finish before the first render.** `mountSpa()` renders what the view returns *after* the view's promise settles, so a reply that arrives first is overwritten by that stale template. A view that loads on start does `setTimeout(load, 0)` in its exported function (see `tools` and `config`), or awaits the load before returning.
 - It must render into the `root` it was given, never re-query the DOM for it.
-- Entry-point-level `state` is for what crosses module boundaries. State private to one view may live as closure variables inside the module.
-- Wrap the dynamic import in try/catch and render the failure — a missing or broken view module must not leave a blank page.
+- A view that must not break the page on a bad reply keeps its last good data (see `config`, which ignores a poll that comes back without `checks`).
 
 Single-view SPAs must not carry unused `step`, `org`, or wizard state.
 

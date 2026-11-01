@@ -29,6 +29,6 @@ Not applicable.
 
 ## Other technical notes
 
-- Placeholder implementation: `app-home.js` renders `home.welcome.title` / `home.welcome.message` from the lang file and nothing else.
+- Placeholder implementation: `views/home/index.js` (mounted by the shell `app-home.js` through `app-boot.js`) renders `home.welcome.title` / `home.welcome.message` from the lang file and nothing else.
 - No WorkTableClient calls (no `client.call()` / `client.table()`).
 - Formerly, this dashboard id (`m0`/"home") hosted the MCP-endpoint display feature; that moved to the `endpoints` dashboard (see `specs/endpoints/`) when this plugin's real home page is implemented.

@@ -154,3 +154,17 @@ cli.done.noRestart = Fatto. Nessun riavvio necessario: ricarica la pagina per ve
 cli.done.restart = Fatto. Riavvia il web server%s.
 cli.done.dbGone = Il database non e' piu' raggiungibile al vecchio indirizzo.
 cli.reminder = Ricorda: rinominare e' offuscamento, non controllo di accesso. La regola che nega davvero la cartella, da aggiungere al server block di nginx:
+
+help.title = Aiuto
+help.intro = La guida per l'utente descrive ogni pagina di questo plugin: a cosa serve, come si usa e cosa fa ogni pulsante.
+help.btn.manual = Manuale
+help.note = Il manuale si apre in una nuova scheda e non richiede una sessione.
+
+// --- barra dei tab (conf/menu.xml <lic_title>): le sole chiavi di questo file unite al dizionario condiviso ---
+menu.worktable.home = Home
+menu.worktable.explorer = Worktable Explorer
+menu.worktable.endpoints = Endpoints
+menu.worktable.mcp-checker = MCP Checker
+menu.worktable.tools = Strumenti
+menu.worktable.config = Configurazione
+menu.worktable.help = Aiuto

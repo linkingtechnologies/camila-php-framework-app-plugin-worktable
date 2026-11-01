@@ -33,8 +33,11 @@ tr.is-readonly input {
   cursor: not-allowed;
 }
 
-/* === Title box visually attached to the tab bar above it === */
-#app .spa-title-box {
+/* === Title box visually attached to the tab bar above it ===
+   Two selectors: inside #app (boxes rendered by the SPAs) and .box.spa-title-box (boxes
+   emitted by the PHP pages, which are siblings of #app, not descendants). */
+#app .spa-title-box,
+.box.spa-title-box {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-top: 3px solid #3273dc;

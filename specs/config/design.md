@@ -273,6 +273,11 @@ the second one, and closing the first alone changes nothing.
 - The SPA polls `GET /vardir` every 2 s, up to 20 times. Each poll briefly reopens the
   database, which is why the interval is generous rather than tight: against a 250 ms
   retry loop the contention is negligible, but polling hard would be self-defeating.
+- The view is `views/config/index.js`, mounted through `app-boot.js`. It starts its first `GET /vardir` with `setTimeout(load, 0)`, after the shell has rendered the template the view returns: a reply that came back first would otherwise be overwritten by that stale first render.
+- A poll that lands in the rename window below can come back without the plan. The SPA
+  keeps the last good `info` unless the reply carries `checks`, and renders the checks
+  table defensively, so a bad poll is simply retried at the next tick instead of ending
+  the polling with an uncaught error.
 - There is a window of a few milliseconds between the rename and the stub being
   written, during which a concurrent request would not find `var/config.php`. It is
   inherent to doing this live; a request landing exactly there fails once.
